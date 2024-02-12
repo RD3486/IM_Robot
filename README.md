@@ -4,6 +4,6 @@ The python code is to be run on raspberry pi which has been interfaced with an a
 where the python code uses it to create the occupancy grid. The python code then moves the robot through the arduino interface. 
 
 The inverse sensor model used is as follows:
--The probability of an empty grid is 0.1.
--The probability of an occupied grid is 0.8.
--The probability of grid which can be occupied or be empty is 0.5. 
+*The probability of an empty grid is 0.1.
+*The probability of an occupied grid is 0.8.
+*The probability of grid which can be occupied or be empty is 0.5. 
