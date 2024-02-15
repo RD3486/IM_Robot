@@ -1,3 +1,4 @@
+//Initialzing the pin numbers. 
 int mr1 = 6; 
 int mr2 = 9;
 int ml1 = 5;
@@ -7,6 +8,7 @@ int echo = 11;
 int distance = 0;
 long duration;
 
+//The speeds will need to be calibrated for the specific robot.
 int rightWheelSpeed = 247;
 int leftWheelSpeed = 255;
 
@@ -15,7 +17,7 @@ int straightTime = 2600;
 
 void setup()
 {
-  //Serial.begin(9600);
+  //Setting up the pins
   pinMode(mr1,OUTPUT);
   pinMode(ml1,OUTPUT);
   pinMode(mr2,OUTPUT);
@@ -28,6 +30,7 @@ void setup()
   analogWrite(mr2,OUTPUT);
   Serial.begin(9600);
 }
+//Fucntions which moves the robot forward.
 void forward()
 {
   analogWrite(mr1,rightWheelSpeed);
@@ -35,7 +38,7 @@ void forward()
   analogWrite(ml1,leftWheelSpeed);
   analogWrite(ml2,LOW);
 }
-
+//Function which moves the robot right.
 void right()
 {
   analogWrite(mr1,rightWheelSpeed);
@@ -43,7 +46,7 @@ void right()
   analogWrite(ml1,LOW);
   analogWrite(ml2,leftWheelSpeed);
 }
-
+//Function which moves the robot left.
 void left()
 {
   analogWrite(mr1,LOW);
@@ -51,7 +54,7 @@ void left()
   analogWrite(ml1,leftWheelSpeed);
   analogWrite(ml2,LOW);
 }
-
+//Function which moves the robot backwards by mving right twice and then going forward.
 void backward()
 {
   right();
@@ -61,7 +64,7 @@ void backward()
   forward();
   delay(straightTime);
 }
-
+//Function which stops the robot
 void stop()
 {
   analogWrite(mr1,LOW);
@@ -69,7 +72,7 @@ void stop()
   analogWrite(ml1,LOW);
   analogWrite(ml2,LOW);
 }
-
+//Function which gets the distance from the ultrasonic sensor.
 void get_dist()
 {
   distance = 0;
@@ -85,7 +88,7 @@ void get_dist()
     }
     Serial.println(distance/20);
 }
-
+//Defining the keys for each function.
 void executeCommand(char cmd)
 {
   switch(cmd)
@@ -134,7 +137,7 @@ void executeCommand(char cmd)
       break;
   }
 }
-
+//Continuously read input from the serial monitor.
 void loop()
 {
   if(Serial.available() > 0)

@@ -1,7 +1,11 @@
+##Importing all necessary libararies
 import numpy as np
 import matplotlib.pyplot as plt
 import serial 
 import curses
+
+##The class helps us calculate the log odds for each grid given the probability. It also updates the grid with the 
+##given states and probabilities.
 
 class OccupancyGrid:
     def __init__(self, size_x, size_y, initial_log_odds):
@@ -17,7 +21,7 @@ class OccupancyGrid:
                 log_odds_update = np.log(likelihood / (1 - likelihood))
                 self.log_odds[x, y] = log_prior + log_odds_update
 
-    def plot_map(self,directory,im):
+    def plot_map(self):
         fig, ax = plt.subplots()
         ax.set_xticks(np.arange(-0.5, self.size_x, 1), minor=True)
         ax.set_yticks(np.arange(-0.5, self.size_y, 1), minor=True)
@@ -38,23 +42,21 @@ class OccupancyGrid:
         plt.savefig(f"final_map.png")
         plt.show()
 
-
+##Functions reads the arduino serial output and returns it as an integer.
 def get_dist(arduino):
     try:
         while True:
             line = arduino.readline().decode('utf-8').rstrip()
-            print(line)
-            dist = int(line) // 49
-            print(dist)
+            dist = int(line)
             return dist 
     except KeyboardInterrupt:
         arduino.close() 
 
-
+##Defining the sensor model
 def sensor_model(sensor_data, x, y):
-    occ = 0.8
-    free = 0.1
-    idk = 0.5
+    occ = 0.8 ##Probability of being occupied
+    free = 0.1##Probability of being free
+    idk = 0.5##Probability of being either one
 
     if sensor_data[x][y] == 1:
         return occ
@@ -64,7 +66,7 @@ def sensor_model(sensor_data, x, y):
         return free
 
 
-
+##The function updates the map with the probabilities from the sensor data.
 def update(x,y,dist,robot):
     intial_prob = 0.5 
     map = np.full((x,y),intial_prob)
@@ -135,22 +137,26 @@ def update(x,y,dist,robot):
  
 
 if __name__ == '__main__':
-    intial_prob = 0.5
+    intial_prob = 0.5 ##The initial probability for wach grid in the map.
     map = np.full((5,5) , intial_prob)
     robot = [0,0,0] #the x-y coordinates and the direction it is facing.
+
+    ##Initializing the arduino and the our movement input.
     arduino = serial.Serial('/dev/ttyUSB0', 9600) 
     screen = curses.initscr()
     curses.noecho()
     curses.cbreak()
     screen.keypad(True)
+
+    ##Defining grid size
     grid_size_x = 5
     grid_size_y = 5
     initial_log_odds = 0.0
     occupancy_map_2d_log_odds = OccupancyGrid(grid_size_x, grid_size_y, initial_log_odds)
-    directory = 'im'
     im = 0
     dist = 0
 
+    ##Keeping track of the pose of the robot and the postion of the postion while moving it around through key strokes.
     try:
         while True:
             im += 1
@@ -208,7 +214,7 @@ if __name__ == '__main__':
                     direc = 0
             elif char == ord('c'):
                 occupancy_map_2d_log_odds.update_grid(map, sensor_model)
-                occupancy_map_2d_log_odds.plot_map(directory,im)
+                occupancy_map_2d_log_odds.plot_map()
             elif char == ord('w'):
                 arduino.write(b'W')
             elif char == ord('a'):
