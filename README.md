@@ -1,4 +1,4 @@
-<h1>IM_ROBOT</h1>
+<h1>Creating an Occupancy Grid using Bayesian Filter</h1>
 This project was done a part of the Intelligent Machines course at Plaksha University.
 <hr>
 Given a grid map, and a set of states for the robot, and an inverse sensor model, it builds an occupancy grid using Bayes' filter.  
